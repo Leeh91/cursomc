@@ -1,30 +1,28 @@
 package com.udemy.cursomc.resources;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.udemy.cursomc.domain.Category;
+import com.udemy.cursomc.services.CategoryService;
 
 @RestController
-@RequestMapping(value="/categories")
+@RequestMapping(value="/categories/")
 public class CategoryResource {
 	
-	@RequestMapping(method=RequestMethod.GET)
-	public List<Category> list() {
+	@Autowired
+	private CategoryService categoryService;
+	
+	@RequestMapping(value="/{id}", method=RequestMethod.GET)
+	public ResponseEntity<?> list(@PathVariable Integer id) {
 		
-		Category cat1 = new Category(1, "Informática");
-		Category cat2 = new Category(2, "Escritório");
+		Category category = this.categoryService.getCategory(id);
 		
-		List<Category> categoryList = new ArrayList<Category>();
-		
-		categoryList.add(cat1);
-		categoryList.add(cat2);
-		
-		return categoryList;
+		return ResponseEntity.ok(category);
 	}
 
 }
