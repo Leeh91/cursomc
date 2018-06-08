@@ -8,9 +8,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.udemy.cursomc.domain.Category;
+import com.udemy.cursomc.domain.City;
 import com.udemy.cursomc.domain.Product;
+import com.udemy.cursomc.domain.State;
 import com.udemy.cursomc.repositories.CategoryRepository;
+import com.udemy.cursomc.repositories.CityRepository;
 import com.udemy.cursomc.repositories.ProductRepository;
+import com.udemy.cursomc.repositories.StateRepository;
 
 @SpringBootApplication
 public class CursomcApplication implements CommandLineRunner{
@@ -19,6 +23,10 @@ public class CursomcApplication implements CommandLineRunner{
 	private CategoryRepository categoryRepository;
 	@Autowired
 	private ProductRepository productRepository;
+	@Autowired
+	private StateRepository stateRepository;
+	@Autowired
+	private CityRepository cityRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -40,8 +48,20 @@ public class CursomcApplication implements CommandLineRunner{
 		product2.getCategories().addAll(Arrays.asList(category1, category2));
 		product3.getCategories().addAll(Arrays.asList(category1));
 		
-		
 		this.categoryRepository.saveAll(Arrays.asList(category1, category2));
 		this.productRepository.saveAll(Arrays.asList(product1, product2, product3));
+		
+		State state1 = new State(null, "Minas Gerais");
+		State state2 = new State(null, "São Paulo");
+		
+		City city1 = new City(null, "Uberlândia", state1);
+		City city2 = new City(null, "São Paulo", state2);
+		City city3 = new City(null, "Campinas", state2);
+		
+		state1.getCities().addAll(Arrays.asList(city1));
+		state2.getCities().addAll(Arrays.asList(city2, city3));
+		
+		this.stateRepository.saveAll(Arrays.asList(state1, state2));
+		this.cityRepository.saveAll(Arrays.asList(city1, city2, city3));
 	}
 }
