@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.udemy.cursomc.ObjectNotFoundException;
 import com.udemy.cursomc.domain.Category;
 import com.udemy.cursomc.repositories.CategoryRepository;
 
@@ -18,6 +19,7 @@ public class CategoryService {
 		
 		Optional<Category> category = this.categoryRepository.findById(id);
 		
-		return category.orElse(null);
+		return category.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id 
+				+ ", Tipo: " + Category.class.getName()));
 	}
 }
