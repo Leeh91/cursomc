@@ -82,7 +82,7 @@ public class CursomcApplication implements CommandLineRunner{
 		
 		customer1.getAddresses().addAll(Arrays.asList(address1, address2));
 		
-		this.addressRepository.saveAll(Arrays.asList(address1, address2));
 		this.customerRepository.saveAll(Arrays.asList(customer1));
+		this.addressRepository.saveAll(Arrays.asList(address1, address2));
 	}
 }
