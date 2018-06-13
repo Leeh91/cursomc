@@ -5,9 +5,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.udemy.cursomc.ObjectNotFoundException;
 import com.udemy.cursomc.domain.Category;
 import com.udemy.cursomc.repositories.CategoryRepository;
+import com.udemy.cursomc.resources.exception.ObjectNotFoundException;
 
 @Service
 public class CategoryService {

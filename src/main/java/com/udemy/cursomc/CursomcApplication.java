@@ -7,12 +7,17 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import com.udemy.cursomc.domain.Address;
 import com.udemy.cursomc.domain.Category;
 import com.udemy.cursomc.domain.City;
+import com.udemy.cursomc.domain.Customer;
 import com.udemy.cursomc.domain.Product;
 import com.udemy.cursomc.domain.State;
+import com.udemy.cursomc.domain.enums.CustomerType;
+import com.udemy.cursomc.repositories.AddressRepository;
 import com.udemy.cursomc.repositories.CategoryRepository;
 import com.udemy.cursomc.repositories.CityRepository;
+import com.udemy.cursomc.repositories.CustomerRepository;
 import com.udemy.cursomc.repositories.ProductRepository;
 import com.udemy.cursomc.repositories.StateRepository;
 
@@ -27,6 +32,10 @@ public class CursomcApplication implements CommandLineRunner{
 	private StateRepository stateRepository;
 	@Autowired
 	private CityRepository cityRepository;
+	@Autowired
+	private CustomerRepository customerRepository;
+	@Autowired
+	private AddressRepository addressRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -63,5 +72,17 @@ public class CursomcApplication implements CommandLineRunner{
 		
 		this.stateRepository.saveAll(Arrays.asList(state1, state2));
 		this.cityRepository.saveAll(Arrays.asList(city1, city2, city3));
+		
+		Customer customer1 = new Customer(null, "Maria Silva", "maria@gmail.com", "09193120044", CustomerType.INDIVIDUAL);
+		
+		customer1.getTelefones().addAll(Arrays.asList("44027598", "953869061"));
+		
+		Address address1 = new Address(null, "Rua Flores", "300", "Apto 303", "Jardim", "2024876", customer1, city1);
+		Address address2 = new Address(null, "Avenida Matos", "105", "Sala 800", "Centro", "12954345", customer1, city2);
+		
+		customer1.getAddresses().addAll(Arrays.asList(address1, address2));
+		
+		this.addressRepository.saveAll(Arrays.asList(address1, address2));
+		this.customerRepository.saveAll(Arrays.asList(customer1));
 	}
 }

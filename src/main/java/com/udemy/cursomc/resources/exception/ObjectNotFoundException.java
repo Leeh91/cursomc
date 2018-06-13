@@ -1,4 +1,4 @@
-package com.udemy.cursomc;
+package com.udemy.cursomc.resources.exception;
 
 public class ObjectNotFoundException extends RuntimeException {
 
