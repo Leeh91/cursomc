@@ -1,5 +1,6 @@
 package com.udemy.cursomc;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,16 +9,23 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.udemy.cursomc.domain.Address;
+import com.udemy.cursomc.domain.CardPayment;
 import com.udemy.cursomc.domain.Category;
 import com.udemy.cursomc.domain.City;
 import com.udemy.cursomc.domain.Customer;
+import com.udemy.cursomc.domain.Order;
+import com.udemy.cursomc.domain.Payment;
 import com.udemy.cursomc.domain.Product;
 import com.udemy.cursomc.domain.State;
+import com.udemy.cursomc.domain.TicketPayment;
 import com.udemy.cursomc.domain.enums.CustomerType;
+import com.udemy.cursomc.domain.enums.StatePayment;
 import com.udemy.cursomc.repositories.AddressRepository;
 import com.udemy.cursomc.repositories.CategoryRepository;
 import com.udemy.cursomc.repositories.CityRepository;
 import com.udemy.cursomc.repositories.CustomerRepository;
+import com.udemy.cursomc.repositories.OrderRepository;
+import com.udemy.cursomc.repositories.PaymentRepository;
 import com.udemy.cursomc.repositories.ProductRepository;
 import com.udemy.cursomc.repositories.StateRepository;
 
@@ -36,6 +44,10 @@ public class CursomcApplication implements CommandLineRunner{
 	private CustomerRepository customerRepository;
 	@Autowired
 	private AddressRepository addressRepository;
+	@Autowired
+	OrderRepository orderRepository;
+	@Autowired
+	PaymentRepository paymentRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -84,5 +96,21 @@ public class CursomcApplication implements CommandLineRunner{
 		
 		this.customerRepository.saveAll(Arrays.asList(customer1));
 		this.addressRepository.saveAll(Arrays.asList(address1, address2));
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+		
+		Order order1 = new Order(null, sdf.parse("30/09/2017 10:32"), customer1, address1);
+		Order order2 = new Order(null, sdf.parse("10/10/2017 19:35"), customer1, address2);
+		
+		Payment payment1 = new CardPayment(null, StatePayment.SETTLED, order1, 6);
+		order1.setPayment(payment1);
+		
+		Payment payment2 = new TicketPayment(null, StatePayment.PENDING, order2, sdf.parse("20/10/2017 00:00"), null);
+		order2.setPayment(payment2);
+		
+		customer1.getOrders().addAll(Arrays.asList(order1, order2));
+		
+		orderRepository.saveAll(Arrays.asList(order1, order2));
+		paymentRepository.saveAll(Arrays.asList(payment1, payment2));
 	}
 }

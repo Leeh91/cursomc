@@ -41,6 +41,9 @@ public class Customer implements Serializable {
 	@CollectionTable(name="PHONES")
 	private Set<String> telefones = new HashSet<String>();
 	
+	@OneToMany(mappedBy="customer")
+	private List<Order> orders = new ArrayList<Order>();
+	
 	public Customer() {
 		// TODO Auto-generated constructor stub
 	}
@@ -108,6 +111,14 @@ public class Customer implements Serializable {
 
 	public void setTelefones(Set<String> telefones) {
 		this.telefones = telefones;
+	}
+
+	public List<Order> getOrders() {
+		return orders;
+	}
+
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
 	}
 
 	@Override
