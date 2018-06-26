@@ -13,6 +13,7 @@ import com.udemy.cursomc.domain.CardPayment;
 import com.udemy.cursomc.domain.Category;
 import com.udemy.cursomc.domain.City;
 import com.udemy.cursomc.domain.Customer;
+import com.udemy.cursomc.domain.Item;
 import com.udemy.cursomc.domain.Order;
 import com.udemy.cursomc.domain.Payment;
 import com.udemy.cursomc.domain.Product;
@@ -24,6 +25,7 @@ import com.udemy.cursomc.repositories.AddressRepository;
 import com.udemy.cursomc.repositories.CategoryRepository;
 import com.udemy.cursomc.repositories.CityRepository;
 import com.udemy.cursomc.repositories.CustomerRepository;
+import com.udemy.cursomc.repositories.ItemRepository;
 import com.udemy.cursomc.repositories.OrderRepository;
 import com.udemy.cursomc.repositories.PaymentRepository;
 import com.udemy.cursomc.repositories.ProductRepository;
@@ -45,9 +47,11 @@ public class CursomcApplication implements CommandLineRunner{
 	@Autowired
 	private AddressRepository addressRepository;
 	@Autowired
-	OrderRepository orderRepository;
+	private OrderRepository orderRepository;
 	@Autowired
-	PaymentRepository paymentRepository;
+	private PaymentRepository paymentRepository;
+	@Autowired
+	private ItemRepository itemRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -112,5 +116,18 @@ public class CursomcApplication implements CommandLineRunner{
 		
 		orderRepository.saveAll(Arrays.asList(order1, order2));
 		paymentRepository.saveAll(Arrays.asList(payment1, payment2));
+		
+		Item item1 = new Item(order1, product1, 0.00, 1, 2000.00);
+		Item item2 = new Item(order1, product3, 0.00, 2, 80.00);
+		Item item3 = new Item(order2, product2, 100.00, 1, 800.00);
+		
+		order1.getItens().addAll(Arrays.asList(item1, item2));
+		order2.getItens().addAll(Arrays.asList(item3));
+		
+		product1.getItens().addAll(Arrays.asList(item1));
+		product2.getItens().addAll(Arrays.asList(item3));
+		product3.getItens().addAll(Arrays.asList(item2));
+		
+		this.itemRepository.saveAll(Arrays.asList(item1, item2, item3));
 	}
 }
