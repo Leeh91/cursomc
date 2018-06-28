@@ -3,9 +3,12 @@ package com.udemy.cursomc.domain;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Item {
 	
+	@JsonIgnore
 	@EmbeddedId
 	private ItemPK id = new ItemPK();
 	
@@ -28,6 +31,7 @@ public class Item {
 		this.price = price;
 	}
 	
+	@JsonIgnore
 	public Order getOrder() {
 		return this.id.getOrder();
 	}
