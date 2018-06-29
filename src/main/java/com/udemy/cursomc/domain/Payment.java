@@ -11,6 +11,7 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.udemy.cursomc.domain.enums.StatePayment;
 
 @Entity
@@ -26,7 +27,7 @@ public abstract class Payment implements Serializable {
 	private Integer id;
 	private Integer state;
 	
-	@JsonBackReference
+	@JsonIgnore
 	@OneToOne
 	@JoinColumn(name="order_id")
 	@MapsId
