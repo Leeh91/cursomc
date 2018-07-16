@@ -27,4 +27,14 @@ public class CategoryService {
 		category.setId(null);
 		return this.categoryRepository.save(category);
 	}
+	
+	public Category update(Category category) {
+		this.getCategory(category.getId());
+		return this.categoryRepository.save(category);
+	}
+	
+	public void delete(Integer id) {
+		this.getCategory(id);
+		this.categoryRepository.deleteById(id);
+	}
 }

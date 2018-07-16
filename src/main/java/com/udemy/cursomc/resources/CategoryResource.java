@@ -3,6 +3,7 @@ package com.udemy.cursomc.resources;
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.udemy.cursomc.domain.Category;
+import com.udemy.cursomc.resources.exception.DataIntegrityException;
 import com.udemy.cursomc.services.CategoryService;
 
 @RestController
@@ -38,6 +40,24 @@ public class CategoryResource {
 				.toUri();
 		
 		return ResponseEntity.created(uri).build();
+	}
+	
+	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
+	public ResponseEntity<Void> update(@RequestBody Category category, @PathVariable Integer id){
+			category.setId(id);
+			category = this.categoryService.update(category);
+			return ResponseEntity.noContent().build();
+	}
+	
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
+	public ResponseEntity<Category> delete(@PathVariable Integer id){
+		
+		try {
+			this.categoryService.delete(id);
+		} catch (DataIntegrityViolationException e) {
+			throw new DataIntegrityException("Não é possível excluir uma categoria que possui produtos");
+		}
+		return ResponseEntity.noContent().build();
 	}
 
 }
