@@ -1,5 +1,6 @@
 package com.udemy.cursomc.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +37,9 @@ public class CategoryService {
 	public void delete(Integer id) {
 		this.getCategory(id);
 		this.categoryRepository.deleteById(id);
+	}
+	
+	public List<Category> findAll(){
+		return this.categoryRepository.findAll();
 	}
 }
