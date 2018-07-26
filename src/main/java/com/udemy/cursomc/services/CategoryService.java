@@ -10,6 +10,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.udemy.cursomc.domain.Category;
+import com.udemy.cursomc.dto.CategoryDTO;
 import com.udemy.cursomc.repositories.CategoryRepository;
 import com.udemy.cursomc.resources.exception.ObjectNotFoundException;
 
@@ -49,5 +50,9 @@ public class CategoryService {
 	public Page<Category> findWithPagination(Integer page, Integer lines, String orderBy, String direction){
 		PageRequest pageRequest = PageRequest.of(page, lines, Direction.valueOf(direction), orderBy);
 		return this.categoryRepository.findAll(pageRequest);
+	}
+	
+	public Category fromDTO(CategoryDTO categoryDTO) {
+		return new Category(categoryDTO.getId(), categoryDTO.getName());
 	}
 }

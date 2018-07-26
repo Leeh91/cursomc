@@ -4,6 +4,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -37,9 +39,9 @@ public class CategoryResource {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST)
-	public ResponseEntity<Void> insert(@RequestBody Category category){
+	public ResponseEntity<Void> insert(@Valid @RequestBody CategoryDTO categoryDTO){
 		
-		category = this.categoryService.insert(category);
+		Category category = this.categoryService.insert(this.categoryService.fromDTO(categoryDTO));
 
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(category.getId())
 				.toUri();
@@ -48,10 +50,12 @@ public class CategoryResource {
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT)
-	public ResponseEntity<Void> update(@RequestBody Category category, @PathVariable Integer id){
-			category.setId(id);
-			category = this.categoryService.update(category);
-			return ResponseEntity.noContent().build();
+	public ResponseEntity<Void> update(@Valid @RequestBody CategoryDTO categoryDTO, @PathVariable Integer id){
+			
+		Category category = this.categoryService.fromDTO(categoryDTO);
+		category.setId(id);
+		category = this.categoryService.update(category);
+		return ResponseEntity.noContent().build();
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)

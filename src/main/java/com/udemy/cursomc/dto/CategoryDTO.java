@@ -2,6 +2,10 @@ package com.udemy.cursomc.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.Length;
+
 import com.udemy.cursomc.domain.Category;
 
 public class CategoryDTO implements Serializable{
@@ -9,6 +13,8 @@ public class CategoryDTO implements Serializable{
 	private static final long serialVersionUID = 1L;
 	 
 	private Integer id;
+	@NotEmpty(message="Campo nome não preenchido")
+	@Length(min=5, max=80, message="O tamanho do nome dever ser no mínimo 5 e no máximo 80 caracteres")
 	private String name;
 	
 	public CategoryDTO() {
