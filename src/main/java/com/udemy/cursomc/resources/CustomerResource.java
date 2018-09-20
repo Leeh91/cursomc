@@ -1,5 +1,6 @@
 package com.udemy.cursomc.resources;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.udemy.cursomc.domain.Customer;
 import com.udemy.cursomc.dto.CustomerDTO;
+import com.udemy.cursomc.dto.NewCustomerDTO;
 import com.udemy.cursomc.resources.exception.DataIntegrityException;
 import com.udemy.cursomc.services.CustomerService;
 
@@ -35,16 +38,16 @@ public class CustomerResource {
 		return ResponseEntity.ok().body(customer);
 	}
 	
-	/*@RequestMapping(method=RequestMethod.POST)
-	public ResponseEntity<Void> insert(@Valid @RequestBody CustomerDTO CustomerDTO){
+	@RequestMapping(method=RequestMethod.POST)
+	public ResponseEntity<Void> insert(@Valid @RequestBody NewCustomerDTO customerDTO){
 		
-		Category category = this.categoryService.insert(this.categoryService.fromDTO(CustomerDTO));
+		Customer customer = this.customerService.insert(this.customerService.fromDTO(customerDTO));
 
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(category.getId())
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(customer.getId())
 				.toUri();
 		
 		return ResponseEntity.created(uri).build();
-	}*/
+	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Void> update(@Valid @RequestBody CustomerDTO customerDTO, @PathVariable Integer id){
