@@ -64,7 +64,7 @@ public class CustomerResource {
 		try {
 			this.customerService.delete(id);
 		} catch (DataIntegrityViolationException e) {
-			throw new DataIntegrityException("Não é possível excluir uma categoria que possui produtos");
+			throw new DataIntegrityException("Não é possível excluir um cliente que possui pedidos");
 		}
 		return ResponseEntity.noContent().build();
 	}
