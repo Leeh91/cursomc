@@ -2,6 +2,14 @@ package com.udemy.cursomc.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.Length;
+
+import com.udemy.cursomc.services.validation.CustomerInsert;
+
+@CustomerInsert
 public class NewCustomerDTO implements Serializable {
 
 	/**
@@ -9,8 +17,15 @@ public class NewCustomerDTO implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	
+	@NotEmpty(message="Preenchimento obrigatório")
+	@Length(min=5, max=120, message="O tamanho do nome dever ser no mínimo 5 e no máximo 80 caracteres")
 	private String name;
+	
+	@NotEmpty(message="Preenchimento obrigatório")
+	@Email(message="E-mail inválido")
 	private String email;
+	
+	@NotEmpty(message="Preenchimento obrigatório")
 	private String individualOrPartyDoc;
 	private Integer type;
 	
