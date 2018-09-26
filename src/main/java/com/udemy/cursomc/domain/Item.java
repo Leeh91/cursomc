@@ -31,13 +31,17 @@ public class Item {
 		this.price = price;
 	}
 	
+	public double getSubTotal() {
+		return (this.price - this.discount) * this.amount;
+	}
+	
 	@JsonIgnore
 	public Order getOrder() {
 		return this.id.getOrder();
 	}
 	
 	public Product getProduct() {
-		return this.id.getProduct();
+		return this.id.getProduct();	
 	}
 
 	public ItemPK getId() {
