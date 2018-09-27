@@ -2,9 +2,11 @@ package com.udemy.cursomc.domain;
 
 import javax.persistence.Entity;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.udemy.cursomc.domain.enums.StatePayment;
 
 @Entity
+@JsonTypeName("cardPayment")
 public class CardPayment extends Payment {
 	
 	/**
