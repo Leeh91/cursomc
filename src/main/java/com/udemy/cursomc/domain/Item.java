@@ -1,5 +1,8 @@
 package com.udemy.cursomc.domain;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
@@ -107,6 +110,21 @@ public class Item {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		NumberFormat nf = NumberFormat.getCurrencyInstance(new Locale("pt", "BR"));
+		StringBuilder builder = new StringBuilder();
+		builder.append(getProduct().getName())
+		.append(", Quantidade: ")
+		.append(getAmount())
+		.append(", Preço unitário: ")
+		.append(nf.format(getPrice()))
+		.append(", Subtotal: ")
+		.append(nf.format(getSubTotal()))
+		.append("\n");
+		return builder.toString();
 	}
 	
 }

@@ -28,6 +28,8 @@ public class OrderService {
 	private ProductService productService;
 	@Autowired
 	private ItemRepository itemRepository;
+	@Autowired
+	private CustomerService customerService;
 	
 	public Order find(Integer id) {
 		Optional<Order> order = this.orderRepository.findById(id);
@@ -38,6 +40,7 @@ public class OrderService {
 	public Order insert(Order order) {
 		order.setId(null);
 		order.setCreationDate(new Date());
+		order.setCustomer(this.customerService.getCustomer(order.getCustomer().getId()));
 		order.getPayment().setState(StatePayment.PENDING);
 		order.getPayment().setOrder(order);
 		
