@@ -30,6 +30,8 @@ public class OrderService {
 	private ItemRepository itemRepository;
 	@Autowired
 	private CustomerService customerService;
+	@Autowired
+	private IEmailService emailService;
 	
 	public Order find(Integer id) {
 		Optional<Order> order = this.orderRepository.findById(id);
@@ -60,6 +62,8 @@ public class OrderService {
 		}
 		
 		itemRepository.saveAll(order.getItens());
+		
+		this.emailService.sendOrderConfirmationEMail(order);
 		
 		return order;
 	}
