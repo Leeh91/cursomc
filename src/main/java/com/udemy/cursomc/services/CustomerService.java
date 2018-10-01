@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,8 @@ public class CustomerService {
 	private CityRepository cityRepository;
 	@Autowired
 	private AddressRepository addressRepository;
+	@Autowired
+	private BCryptPasswordEncoder bcryptPasswordEncoder;
 	
 	public Customer getCustomer(Integer id) {
 		Optional<Customer> customer = this.customerRepository.findById(id);
@@ -70,12 +73,12 @@ public class CustomerService {
 	}
 	
 	public Customer fromDTO(CustomerDTO customerDTO) {
-		return new Customer(customerDTO.getId(), customerDTO.getName(), customerDTO.getEmail(), null, null);
+		return new Customer(customerDTO.getId(), customerDTO.getName(), customerDTO.getEmail(), null, null, null);
 	}
 	
 	public Customer fromDTO(NewCustomerDTO customerDTO) {
 		Customer customer = new Customer(null, customerDTO.getName(), customerDTO.getEmail(), customerDTO.getIndividualOrPartyDoc(),
-				CustomerType.toEnum(customerDTO.getType()));
+				CustomerType.toEnum(customerDTO.getType()), bcryptPasswordEncoder.encode(customerDTO.getPassword()));
 		
 		City city = this.cityRepository.getOne(customerDTO.getCityId());
 		

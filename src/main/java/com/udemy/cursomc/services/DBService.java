@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.udemy.cursomc.domain.Address;
@@ -19,6 +20,7 @@ import com.udemy.cursomc.domain.Product;
 import com.udemy.cursomc.domain.State;
 import com.udemy.cursomc.domain.TicketPayment;
 import com.udemy.cursomc.domain.enums.CustomerType;
+import com.udemy.cursomc.domain.enums.Profile;
 import com.udemy.cursomc.domain.enums.StatePayment;
 import com.udemy.cursomc.repositories.AddressRepository;
 import com.udemy.cursomc.repositories.CategoryRepository;
@@ -51,6 +53,8 @@ public class DBService {
 	private PaymentRepository paymentRepository;
 	@Autowired
 	private ItemRepository itemRepository;
+	@Autowired
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	public void instantiateTestDatabase() throws ParseException {
 		Category category1 = new Category(null, "Informática");
@@ -111,17 +115,22 @@ public class DBService {
 		this.stateRepository.saveAll(Arrays.asList(state1, state2));
 		this.cityRepository.saveAll(Arrays.asList(city1, city2, city3));
 		
-		Customer customer1 = new Customer(null, "Maria Silva", "developer.lambdacode@gmail.com", "09193120044", CustomerType.INDIVIDUAL);
-		
+		Customer customer1 = new Customer(null, "Maria Silva", "developer.lambdacode@gmail.com", "09193120044", CustomerType.INDIVIDUAL, bCryptPasswordEncoder.encode("123"));
 		customer1.getPhones().addAll(Arrays.asList("44027598", "953869061"));
+		
+		Customer customer2 = new Customer(null, "Ana Costa", "developer2.lambdacode@gmail.com", "75098735092", CustomerType.INDIVIDUAL, bCryptPasswordEncoder.encode("321"));
+		customer2.getPhones().addAll(Arrays.asList("44119087", "987654321"));
+		customer2.addProfile(Profile.ADMIN);
 		
 		Address address1 = new Address(null, "Rua Flores", "300", "Apto 303", "Jardim", "2024876", customer1, city1);
 		Address address2 = new Address(null, "Avenida Matos", "105", "Sala 800", "Centro", "12954345", customer1, city2);
+		Address address3 = new Address(null, "Avenida Floriano", "2106", null, "Centro", "12940000", customer2, city2);
 		
 		customer1.getAddresses().addAll(Arrays.asList(address1, address2));
+		customer2.getAddresses().addAll(Arrays.asList(address3));
 		
-		this.customerRepository.saveAll(Arrays.asList(customer1));
-		this.addressRepository.saveAll(Arrays.asList(address1, address2));
+		this.customerRepository.saveAll(Arrays.asList(customer1, customer2));
+		this.addressRepository.saveAll(Arrays.asList(address1, address2, address3));
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm");
 		
