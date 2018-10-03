@@ -15,12 +15,15 @@ import com.udemy.cursomc.domain.Address;
 import com.udemy.cursomc.domain.City;
 import com.udemy.cursomc.domain.Customer;
 import com.udemy.cursomc.domain.enums.CustomerType;
+import com.udemy.cursomc.domain.enums.Profile;
 import com.udemy.cursomc.dto.CustomerDTO;
 import com.udemy.cursomc.dto.NewCustomerDTO;
 import com.udemy.cursomc.repositories.AddressRepository;
 import com.udemy.cursomc.repositories.CityRepository;
 import com.udemy.cursomc.repositories.CustomerRepository;
+import com.udemy.cursomc.resources.exception.AuthorizationException;
 import com.udemy.cursomc.resources.exception.ObjectNotFoundException;
+import com.udemy.cursomc.security.UserSS;
 
 @Service
 public class CustomerService {
@@ -35,6 +38,13 @@ public class CustomerService {
 	private BCryptPasswordEncoder bcryptPasswordEncoder;
 	
 	public Customer getCustomer(Integer id) {
+		
+		UserSS user = UserService.authenticated();
+		
+		if(user == null || !user.hasRole(Profile.ADMIN) && !user.getId().equals(id)) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
 		Optional<Customer> customer = this.customerRepository.findById(id);
 		
 		return customer.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado! Id: " + id 

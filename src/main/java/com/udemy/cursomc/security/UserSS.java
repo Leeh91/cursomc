@@ -42,6 +42,10 @@ public class UserSS implements UserDetails{
 		return this.id;
 	}
 	
+	public boolean hasRole(Profile profile) {
+		return this.getAuthorities().contains(new SimpleGrantedAuthority(profile.getDescription()));
+	}
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
