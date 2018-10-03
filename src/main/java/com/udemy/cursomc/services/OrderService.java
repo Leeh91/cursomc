@@ -4,8 +4,12 @@ import java.util.Date;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.udemy.cursomc.domain.Customer;
 import com.udemy.cursomc.domain.Item;
 import com.udemy.cursomc.domain.Order;
 import com.udemy.cursomc.domain.TicketPayment;
@@ -13,7 +17,9 @@ import com.udemy.cursomc.domain.enums.StatePayment;
 import com.udemy.cursomc.repositories.ItemRepository;
 import com.udemy.cursomc.repositories.OrderRepository;
 import com.udemy.cursomc.repositories.PaymentRepository;
+import com.udemy.cursomc.resources.exception.AuthorizationException;
 import com.udemy.cursomc.resources.exception.ObjectNotFoundException;
+import com.udemy.cursomc.security.UserSS;
 
 @Service
 public class OrderService {
@@ -66,6 +72,20 @@ public class OrderService {
 		this.emailService.sendOrderConfirmationHtmlEmail(order);
 		
 		return order;
+	}
+	
+	public Page<Order> findPage(Integer page, Integer linesPerPage, String orderBy, String direction){
+		
+		UserSS user = UserService.authenticated();
+		
+		if(user == null) {
+			throw new AuthorizationException("Acesso negado!");
+		}
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		
+		Customer customer = this.customerService.getCustomer(user.getId());
+		
+		return this.orderRepository.findByCustomer(customer, pageRequest);
 	}
 
 }
