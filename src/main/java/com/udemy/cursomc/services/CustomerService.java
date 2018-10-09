@@ -1,5 +1,6 @@
 	package com.udemy.cursomc.services;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,6 +11,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.udemy.cursomc.domain.Address;
 import com.udemy.cursomc.domain.City;
@@ -36,6 +38,8 @@ public class CustomerService {
 	private AddressRepository addressRepository;
 	@Autowired
 	private BCryptPasswordEncoder bcryptPasswordEncoder;
+	@Autowired
+	private S3Service s3Service;
 	
 	public Customer getCustomer(Integer id) {
 		
@@ -112,5 +116,20 @@ public class CustomerService {
 	private void updateData(Customer newCustomer, Customer customer) {
 		newCustomer.setName(customer.getName());
 		newCustomer.setEmail(customer.getEmail());
+	}
+	
+	public URI uploadProfilePicture(MultipartFile multipartFile) {
+		
+		UserSS user = UserService.authenticated();
+		if(user == null) {
+			throw new AuthorizationException("Acesso negado");
+		}
+		
+		URI uri = this.s3Service.uploadFile(multipartFile);
+		
+		Customer customer = this.getCustomer(user.getId());
+		customer.setImageURL(uri.toString());
+		
+		return uri;
 	}
 }

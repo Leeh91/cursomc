@@ -36,6 +36,7 @@ public class Customer implements Serializable {
 	private String email;
 	private String individualOrPartyDoc;
 	private Integer type;
+	private String imageURL;
 	
 	@JsonIgnore
 	private String password;
@@ -151,6 +152,14 @@ public class Customer implements Serializable {
 
 	public void setOrders(List<Order> orders) {
 		this.orders = orders;
+	}
+	
+	public String getImageURL() {
+		return imageURL;
+	}
+
+	public void setImageURL(String imageURL) {
+		this.imageURL = imageURL;
 	}
 
 	@Override
