@@ -1,10 +1,12 @@
 	package com.udemy.cursomc.services;
 
+import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
@@ -40,6 +42,11 @@ public class CustomerService {
 	private BCryptPasswordEncoder bcryptPasswordEncoder;
 	@Autowired
 	private S3Service s3Service;
+	@Autowired
+	private ImageService imageService;
+	
+	@Value("${img.prefix.client.profile}")
+	private String prefix;
 	
 	public Customer getCustomer(Integer id) {
 		
@@ -125,11 +132,10 @@ public class CustomerService {
 			throw new AuthorizationException("Acesso negado");
 		}
 		
-		URI uri = this.s3Service.uploadFile(multipartFile);
+		BufferedImage jpgImage = this.imageService.getJpgImageFromFile(multipartFile);
 		
-		Customer customer = this.getCustomer(user.getId());
-		customer.setImageURL(uri.toString());
+		String filename = this.prefix + user.getId() + ".jpg";
 		
-		return uri;
+		return this.s3Service.uploadFile(this.imageService.getInputStream(jpgImage, "jpg"), filename, "image");
 	}
 }
