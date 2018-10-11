@@ -47,6 +47,8 @@ public class CustomerService {
 	
 	@Value("${img.prefix.client.profile}")
 	private String prefix;
+	@Value("${img.profile.size}")
+	private String size;
 	
 	public Customer getCustomer(Integer id) {
 		
@@ -133,7 +135,7 @@ public class CustomerService {
 		}
 		
 		BufferedImage jpgImage = this.imageService.getJpgImageFromFile(multipartFile);
-		
+		jpgImage = this.imageService.cropImage(jpgImage);
 		String filename = this.prefix + user.getId() + ".jpg";
 		
 		return this.s3Service.uploadFile(this.imageService.getInputStream(jpgImage, "jpg"), filename, "image");
