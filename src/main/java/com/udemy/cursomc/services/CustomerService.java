@@ -48,7 +48,7 @@ public class CustomerService {
 	@Value("${img.prefix.client.profile}")
 	private String prefix;
 	@Value("${img.profile.size}")
-	private String size;
+	private Integer size;
 	
 	public Customer getCustomer(Integer id) {
 		
@@ -88,6 +88,19 @@ public class CustomerService {
 	
 	public List<Customer> findAll(){
 		return this.customerRepository.findAll();
+	}
+	
+	public Customer findByEmail(String email) {
+	    UserSS user = UserService.authenticated();
+	    if(user == null || !user.hasRole(Profile.ADMIN) && !email.equals(user.getUsername())) {
+	        throw new AuthorizationException("Acesso negado");
+	    }
+	    
+	    Customer customer = this.customerRepository.findByEmail(email);
+	    if(customer == null) {
+	        throw new ObjectNotFoundException("Objeto não encontrado! Id: " + user.getId() + " Tipo: " + Customer.class.getName());
+	    }
+	    return customer;
 	}
 	
 	public Page<Customer> findWithPagination(Integer page, Integer lines, String orderBy, String direction){
@@ -135,7 +148,10 @@ public class CustomerService {
 		}
 		
 		BufferedImage jpgImage = this.imageService.getJpgImageFromFile(multipartFile);
+		
 		jpgImage = this.imageService.cropImage(jpgImage);
+		jpgImage = this.imageService.resize(jpgImage, size);
+		
 		String filename = this.prefix + user.getId() + ".jpg";
 		
 		return this.s3Service.uploadFile(this.imageService.getInputStream(jpgImage, "jpg"), filename, "image");

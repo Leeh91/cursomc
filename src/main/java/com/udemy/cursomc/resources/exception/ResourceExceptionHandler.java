@@ -1,6 +1,7 @@
 package com.udemy.cursomc.resources.exception;
 
-import org.springframework.http.HttpRequest;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -16,7 +17,7 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
 public class ResourceExceptionHandler {
 
 	@ExceptionHandler(ObjectNotFoundException.class)
-	public ResponseEntity<StandardError> objectNotFound(ObjectNotFoundException e, HttpRequest request){
+	public ResponseEntity<StandardError> objectNotFound(ObjectNotFoundException e, HttpServletRequest request){
 		
 		StandardError error = new StandardError(HttpStatus.NOT_FOUND.value(), e.getMessage(), System.currentTimeMillis());
 		
@@ -24,7 +25,7 @@ public class ResourceExceptionHandler {
 	}
 	
 	@ExceptionHandler(DataIntegrityException.class)
-	public ResponseEntity<StandardError> dataIntegrity(DataIntegrityException e, HttpRequest request){
+	public ResponseEntity<StandardError> dataIntegrity(DataIntegrityException e, HttpServletRequest request){
 		
 		StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
 		
@@ -32,7 +33,7 @@ public class ResourceExceptionHandler {
 	}
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<StandardError> validation(MethodArgumentNotValidException e, HttpRequest request){
+	public ResponseEntity<StandardError> validation(MethodArgumentNotValidException e, HttpServletRequest request){
 		
 		ValidationError error = new ValidationError(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
 		
@@ -44,7 +45,7 @@ public class ResourceExceptionHandler {
 	}
 	
 	@ExceptionHandler(AuthorizationException.class)
-	public ResponseEntity<StandardError> authorization(ObjectNotFoundException e, HttpRequest request){
+	public ResponseEntity<StandardError> authorization(AuthorizationException e, HttpServletRequest request){
 		
 		StandardError error = new StandardError(HttpStatus.FORBIDDEN.value(), e.getMessage(), System.currentTimeMillis());
 		
@@ -52,7 +53,7 @@ public class ResourceExceptionHandler {
 	}
 	
 	@ExceptionHandler(FileException.class)
-	public ResponseEntity<StandardError> file(FileException e, HttpRequest request){
+	public ResponseEntity<StandardError> file(FileException e, HttpServletRequest request){
 		
 		StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
 		
@@ -60,7 +61,7 @@ public class ResourceExceptionHandler {
 	}
 	
 	@ExceptionHandler(AmazonServiceException.class)
-	public ResponseEntity<StandardError> amazonService(AmazonServiceException e, HttpRequest request){
+	public ResponseEntity<StandardError> amazonService(AmazonServiceException e, HttpServletRequest request){
 		
 		HttpStatus status = HttpStatus.valueOf(e.getErrorCode());
 		
@@ -70,7 +71,7 @@ public class ResourceExceptionHandler {
 	}
 	
 	@ExceptionHandler(AmazonClientException.class)
-	public ResponseEntity<StandardError> amazonClient(AmazonClientException e, HttpRequest request){
+	public ResponseEntity<StandardError> amazonClient(AmazonClientException e, HttpServletRequest request){
 		
 		StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
 		
@@ -78,7 +79,7 @@ public class ResourceExceptionHandler {
 	}
 	
 	@ExceptionHandler(AmazonS3Exception.class)
-	public ResponseEntity<StandardError> amazonS3(AmazonS3Exception e, HttpRequest request){
+	public ResponseEntity<StandardError> amazonS3(AmazonS3Exception e, HttpServletRequest request){
 		
 		StandardError error = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
 		
