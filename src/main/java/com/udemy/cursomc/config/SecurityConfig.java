@@ -25,68 +25,59 @@ import com.udemy.cursomc.security.JWTUtil;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled=true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter{
-	
-	@Autowired
-	private Environment environment;
-	
-	@Autowired
-	private UserDetailsService userDetailsService;
-	
-	@Autowired
-	private JWTUtil jwtUtil;
-	
-	private static final String[] PUBLIC_MATCHERS = {
-			"/h2-console/**"
-	};
-	
-	private static final String[] PUBLIC_MATCHERS_GET = {
-			"/products/**",
-			"/categories/**",
-			"/estados/**"
-	};
-	
-	private static final String[] PUBLIC_MATCHERS_POST = {
-			"/customers",
-			"/auth/forgot"
-	};
-	
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		
-		if(Arrays.asList(environment.getActiveProfiles()).contains("test")) {
-			http.headers().frameOptions().disable();
-		}
-		
-		http.cors().and().csrf().disable();
-		
-		http.authorizeRequests()
-		.antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
-		.antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
-		.antMatchers(PUBLIC_MATCHERS).permitAll()
-		.anyRequest().authenticated();
-		
-		http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
-		http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, this.userDetailsService));
-		
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-	}
-	
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
-	}
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
-		return source;
-	}
-	
-	@Bean
-	public BCryptPasswordEncoder bCryptPasswordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Autowired
+    private Environment environment;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private JWTUtil jwtUtil;
+
+    private static final String[] PUBLIC_MATCHERS = { "/h2-console/**" };
+
+    private static final String[] PUBLIC_MATCHERS_GET = { "/products/**", "/categories/**", "/estados/**" };
+
+    private static final String[] PUBLIC_MATCHERS_POST = { "/customers", "/auth/forgot" };
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+
+        if (Arrays.asList(environment.getActiveProfiles()).contains("test")) {
+            http.headers().frameOptions().disable();
+        }
+
+        http.cors().and().csrf().disable();
+
+        http.authorizeRequests().antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
+            .antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll().antMatchers(PUBLIC_MATCHERS).permitAll()
+            .anyRequest().authenticated();
+
+        http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
+        http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, this.userDetailsService));
+
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration().applyPermitDefaultValues();
+        corsConfiguration.setAllowedMethods(Arrays.asList("POST", "GET", "PUT", "DELETE", "OPTIONS"));
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", corsConfiguration);
+        return source;
+    }
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }
